@@ -20,7 +20,7 @@ module.exports = function(app, passport) {
         })
     })
 
-    app.get('/loadstore', function(req, res){
+    app.get('/', function(req, res){
        Item.find({active:true}, function(err, items){
            res.render('members.ejs', {
               items: items

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<iframe id="mainiframe" src="" style="position:fixed; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:-1;">
+    Your browser doesn't support IFrames
+</iframe>
+
+<nav id="mainnav" class="navbar navbar-default" role="navigation" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Home</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="javascript:changeSRC('http://mighty-peak-3301.herokuapp.com/public');clearLeftLabel();" id="ccp">CCP Current Standings</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Store<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <% if(items.length) {
+                                items.forEach(function(item){
+                                if(item.type == 'store'){
+                        %>
+                        <li><a href="javascript:changeSRC('<%=item.description%>');itemClicked('<%=item.name%>', '<%=item.ccp%>', '<%=item.quantity%>');"><%=item.name %></a></li>
+                        <% } })  } %>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Auction<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <% if(items.length) {
+                                items.forEach(function(item){
+                                if(item.type == 'auction'){
+                        %>
+                        <li><a href="javascript:changeSRC('<%=item.description%>');itemClicked('<%=item.name%>', '<%=item.ccp%>', '<%=item.quantity%>');"><%=item.name %></a></li>
+                        <% } })  } %>
+                    </ul>
+                </li>
+            </ul>
+
+                <b id="itemname" class="navbar-text"></b>
+                <p id = "leftlabel_first" class="navbar-text"></p>
+                 <b id="itemccp" class="navbar-text"></b>
+                <p id = "leftlabel_second" class="navbar-text"></p>
+                <b id="itemquantity" class="navbar-text"></b>
+                <p id = "leftlabel_third" class="navbar-text"></p>
+
+            <form  style="float:left;" class="navbar-form navbar-left" action="/buystore" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="UUID" placeholder="Enter Passcode">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <p class="navbar-text" id="rightlabel"></p>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+
+</nav>
+
+
+</body>
+<script>
+    $('#mainiframe').css("margin-top", $('#mainnav').height());
+
+    function changeSRC (src){
+        $('#mainiframe').attr('src', src);
+    }
+
+    function itemClicked (name, ccp, quantity){
+        $('#itemname').text("Item Name: ");
+        $('#leftlabel_first').text(name);
+
+        $('#itemccp').text("Item CCP Cost: ");
+        $('#leftlabel_second').text(ccp);
+
+        $('#itemquantity').text("Item Quantity: ");
+        $('#leftlabel_third').text(quantity);
+    }
+
+    function clearLeftLabel(){
+        $('#itemname').text("");
+        $('#leftlabel_first').text("");
+
+        $('#itemccp').text("");
+        $('#leftlabel_second').text("");
+
+        $('#itemquantity').text("");
+        $('#leftlabel_third').text("");
+    }
+</script>
+</html>

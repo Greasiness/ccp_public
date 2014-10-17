@@ -24,29 +24,28 @@ module.exports = function(app, passport) {
     })
 
     app.get('/', function(req, res){
-       Item.find({active:true}, function(err, items){
-           if(err) {
-               res.send("There was an error. Please report this error code to primetime: 1")
-               return console.error(err);
-           }
-           res.render('members.ejs', {
-              items: items,
-               message: ''
-           });
-       })
-    });
-
-    function endBuy(message, res){
+        console.log("from / " +req.flash('message'));
         Item.find({active:true}, function(err, items){
+            if(err) {
+                res.send("There was an error. Please report this error code to primetime: 1")
+                return console.error(err);
+            }
             res.render('members.ejs', {
                 items: items,
-                message: message
+                message: req.flash('message')
             });
         })
+    });
+
+    function endBuy(message, req, res){
+        console.log("from endbuy ");
+        req.flash('message', message);
+        console.log(req.flash('message'));
+        res.redirect('/');
     }
     app.post('/buystore', function(req,res){
         if(!validator.isUUID(req.body.UUID)){
-            endBuy("Not a valid passcode.", res);
+            endBuy("Not a valid passcode.", req, res);
             return;
         }
 
@@ -54,14 +53,14 @@ module.exports = function(app, passport) {
 
         User.findOne({UUID: req.body.UUID}, function(err, user){
             if(err){
-                endBuy("There was an error. Please report this error code to primetime: 2", res);
+                endBuy("There was an error. Please report this error code to primetime: 2", req, res);
                 throw err;
                 return;
             }
             if(user){
                 Item.findOne({name:req.body.name}, function(err, item){
                     if(err){
-                        endBuy("There was an error, try again later.", res);
+                        endBuy("There was an error, try again later.", req,  res);
                         throw err;
                         return;
                     }
@@ -69,7 +68,7 @@ module.exports = function(app, passport) {
                         if (user.ccp >= item.ccp && item.active && item.quantity > 0) {
                             Changelog.findOne({type: 'store'}, function (err, changelog) {
                                 if (err) {
-                                    endBuy("There was an error. Please report this error code to primetime: 3", res);
+                                    endBuy("There was an error. Please report this error code to primetime: 3", req, res);
                                     throw err;
                                     return;
                                 }
@@ -87,49 +86,46 @@ module.exports = function(app, passport) {
 
                                         changelog.save(function (err) {
                                             if (err) {
-                                                endBuy("There was an error. Please report this error code to primetime: 4", res);
+                                                endBuy("There was an error. Please report this error code to primetime: 4",req,  res);
                                                 throw err;
                                                 return;
                                             }
-                                            changelogFlag = true;
                                         });
 
                                         user.save(function (err) {
                                             if (err) {
-                                                endBuy("There was an error. Please report this error code to primetime: 5", res);
+                                                endBuy("There was an error. Please report this error code to primetime: 5",req,  res);
                                                 throw err;
                                                 return;
                                             }
-                                            userFlag = true;
                                         });
 
                                         item.save(function (err) {
                                             if (err) {
-                                                endBuy("There was an error. Please report this error code to primetime: 6", res);
+                                                endBuy("There was an error. Please report this error code to primetime: 6",req,  res);
                                                 throw err;
                                                 return;
                                             }
-                                            itemFlag = true;
                                         });
 
-                                    endBuy("Success! Your ccp is now at " + user.ccp, res);
+                                    endBuy("Success! Your ccp is now at " + user.ccp, req, res);
                                     return;
                                 }
 
                             })
 
                         } else {
-                            endBuy("You do not have enough ccp or the item is no longer in the store.", res)
+                            endBuy("You do not have enough ccp or the item is no longer in the store.", req, res)
                             return;
 
                         }
                     } else {
-                        endBuy("Item not found.", res);
+                        endBuy("Item not found.", req, res);
                         return;
                     }
                 })
             } else {
-                endBuy("Passcode not recognized.", res)
+                endBuy("Passcode not recognized.", req, res)
                 return;
             }
         })

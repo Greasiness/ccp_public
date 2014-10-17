@@ -74,7 +74,7 @@ module.exports = function(app, passport) {
                                     return;
                                 }
                                 if (changelog) {
-                                    var temp = '' + user.name + ' bought a ' + item.name + " for " + item.ccp + " ccp. CCP Change from " + user.ccp + " to " + (user.ccp- item.ccp) + ". Item Quantity Change from " + item.quantity + " to " + (item.quantity-1) + "\n";
+                                    var temp = '' + user.name + ' bought a ' + item.name + " for " + item.ccp + " ccp. CCP Change from " + user.ccp + " to " + (user.ccp- item.ccp) + ". Item Quantity Change from " + item.quantity + " to " + (item.quantity-1) + "\n\n";
                                     console.log(temp);
                                     changelog.content = changelog.content + temp;
                                     if (changelog.content.length > 100000) {
